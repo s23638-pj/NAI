@@ -1,9 +1,24 @@
+"""
+Rules: https://pl.wikipedia.org/wiki/Czw%C3%B3rki
+Authors: Wiktor Krieger & Sebastian Augustyniak
+
+Instructions:
+Start a game in terminal,
+Make a move by choosing number from 1 to 7, click enter.
+Repeat until you or your opponent has connected four characters
+"""
 import numpy as np
 from easyAI import TwoPlayerGame
 
 
 class ConnectFour(TwoPlayerGame):
     def __init__(self, players, board=None):
+        """
+        Constructor of the ConnectFour class, initializes the Connect Four game
+
+        :param players: A list of two players.
+        :param board: An array representing the state of the board, default is an empty board.
+        """
         self.players = players
         self.board = (
             board
@@ -14,6 +29,9 @@ class ConnectFour(TwoPlayerGame):
         self.last_move = None  # Dodane pole do przechowywania informacji o ostatnim ruchu
 
     def show(self):
+        """
+        Displays the current state of the Connect Four game board
+        """
         colors = ["\u001b[0m", "\u001b[32m",
                   "\u001b[34m"]  # ANSI Escape Codes dla kolorów (0m - domyślny, 32m - zielony, 34m - niebieski)
         print("\n1 2 3 4 5 6 7")
@@ -26,52 +44,60 @@ class ConnectFour(TwoPlayerGame):
             print(row_str)
 
     def possible_moves(self):
+        """
+        Returns a list of available moves, which are the columns where a player can place a character
+
+        :return: List of available columns (from 1 to 7).
+        """
         return [
             i + 1 for i in range(7)
             if (self.board[:, i].min() == 0)
         ]
 
     def make_move(self, column):
-        column -= 1  # Odejmujemy 1, aby przekształcić od 1 do 7 na od 0 do 6
+        """
+        Makes a move by placing a player's character in the selected column
+
+        :param column: The column number where the player places a piece (from 1 to 7)
+        """
+        column -= 1
         line = np.argmin(self.board[:, column] != 0)
         self.board[line, column] = self.current_player
-        self.last_move = (line, column, self.current_player)  # Zaktualizuj informacje o ostatnim ruchu
+        self.last_move = (line, column, self.current_player)
 
     def lose(self):
+        """
+        Checks if the current player has lost the Connect Four game by finding a sequence of four pieces
+
+        :return: True if the current player has lost otherwise False
+        """
         return find_four(self.board, self.opponent_index)
 
     # -----------------
 
-   def is_over(self):
-	''' 
-	Check if the game is over.
-            
-            Returns:
-                bool: True if the game is over, False otherwise.
-	'''
+    def is_over(self):
+        """
+        Checks if the game is over, meaning the board is full or one of the players has lost
+
+        :return: True if the current player has lost otherwise False
+        """
         return (self.board.min() > 0) or self.lose()
 
     def scoring(self):
-	''' 
-	 Calculate the score of the current game state.
-            
-            Returns:
-                int: The score of the current game state.
-	'''
+        """
+        Determines the game's score. Assigns a score of -100 if the current player has lost otherwise, 0
+        :return: The game's score value
+        """
         return -100 if self.lose() else 0
 
 
 def find_four(board, current_player):
-	'''
-	Check if there are four in a row for the given player.
-            
-            Parameters:
-                board (numpy.ndarray): The game board.
-                current_player (int): The current player (1 or 2).
-            
-            Returns:
-                bool: True if there are four in a row, False otherwise. 
-	'''
+    """
+    A helper function that checks if there is a sequence of four characters belonging to a specific player on the board
+    :param board: An array representing the state of the board
+    :param current_player: The number of the current player (1 or 2)
+    :return: True if a sequence of four characters is found; otherwise False
+    """
     for pos, direction in POS_DIR:
         if has_four_in_a_row(board, pos, direction, current_player):
             return True
@@ -79,30 +105,16 @@ def find_four(board, current_player):
 
 
 def has_four_in_a_row(board, start_pos, direction, current_player):
-	''' 
-	Check if there are four in a row in a given direction.
-            
-            Parameters:
-                board (numpy.ndarray): The game board.
-                start_pos (tuple): Starting position for checking.
-                direction (numpy.ndarray): Direction of checking.
-                current_player (int): The current player (1 or 2).
-            
-            Returns:
-                bool: True if there are four in a row, False otherwise.
-
-	'''
+    """
+    A helper function that checks for a sequence of four characters in a specific direction (vertical, horizontal, diagonal)
+    :param board: An array representing the state of the board
+    :param start_pos: The starting position from which to check the sequence
+    :param direction: The direction in which the sequence is checked
+    :param current_player: The number of the current player (1 or 2).
+    :return: True if a sequence of four characters is found otherwise False
+    """
     streak = 0
     while is_valid_position(start_pos):
-	'''
-	Check if a position is valid on the game board.
-            
-            Parameters:
-                pos (tuple): The position to check.
-            
-            Returns:
-                bool: True if the position is valid, False otherwise.
-	'''
         if board[start_pos[0], start_pos[1]] == current_player:
             streak += 1
             if streak == 4:
@@ -114,53 +126,46 @@ def has_four_in_a_row(board, start_pos, direction, current_player):
 
 
 def is_valid_position(pos):
-	'''
-	Check if a position is valid on the game board.
-            
-            Parameters:
-                pos (tuple): The position to check.
-            
-            Returns:
-                bool: True if the position is valid, False otherwise.
-	'''
+    """
+    A helper function that checks if a position is within the board's boundaries.
+    :param pos: The position to be checked
+    :return: True if the position is within the board's boundaries otherwise False
+    """
     return 0 <= pos[0] <= 5 and 0 <= pos[1] <= 6
 
 
 def move_position(pos, direction):
-	'''
-	Move a position in a given direction.
-            
-            Parameters:
-                pos (tuple): The current position.
-                direction (numpy.ndarray): Direction of movement.
-            
-            Returns:
-                tuple: New position after movement.
-	'''
+    """
+    A helper function that moves a position in a specific direction
+    :param pos: The current position
+    :param direction: The direction of movement
+    :return: The new position after the movement
+    """
     return pos + direction
+
+
+"""
+A list containing all possible directions in which sequences of four characters are checked on the Connect Four board
+"""
 POS_DIR = np.array(
-    # Pionowe kierunki
+    # Vertical
     [[[i, 0], [0, 1]] for i in range(6)]
-    # Poziome kierunki
+    # Horizontal
     + [[[0, i], [1, 0]] for i in range(7)]
-    # Skosy w prawo (górna część planszy)
+    # Diagonal
     + [[[i, 0], [1, 1]] for i in range(1, 3)]
-    # Skosy w prawo (lewa część planszy)
     + [[[0, i], [1, 1]] for i in range(4)]
-    # Skosy w lewo (górna część planszy)
     + [[[i, 6], [1, -1]] for i in range(1, 3)]
-    # Skosy w lewo (prawa część planszy)
     + [[[0, i], [1, -1]] for i in range(3, 7)]
 )
 
 if __name__ == "__main__":
 
-    from easyAI import AI_Player, Negamax, SSS, Human_Player
+    from easyAI import AI_Player, Negamax, Human_Player
 
-    ai_neg = Negamax(5)
-    ai_sss = SSS(5)
+    ai = Negamax(5)
     human = Human_Player
-    game = ConnectFour([Human_Player(human), Human_Player(human)])
+    game = ConnectFour([Human_Player(human), AI_Player(ai)])
     game.play()
 
     if game.lose():
@@ -168,7 +173,6 @@ if __name__ == "__main__":
     else:
         print("We have a draw")
 
-    # Wyświetlanie informacji o ostatnim ruchu po zakończeniu gry
     if game.last_move:
         line, column, player = game.last_move
         print(f"Last move: Player {player} in column {column + 1}, row {line + 1}.")
