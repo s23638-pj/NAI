@@ -42,56 +42,102 @@ class ConnectFour(TwoPlayerGame):
 
     # -----------------
 
-    def is_over(self):
+   def is_over(self):
+	''' 
+	Check if the game is over.
+            
+            Returns:
+                bool: True if the game is over, False otherwise.
+	'''
         return (self.board.min() > 0) or self.lose()
 
     def scoring(self):
+	''' 
+	 Calculate the score of the current game state.
+            
+            Returns:
+                int: The score of the current game state.
+	'''
         return -100 if self.lose() else 0
 
 
 def find_four(board, current_player):
-    # Iteracja przez wszystkie możliwe kierunki w poszukiwaniu sekwencji czterech pionków
+	'''
+	Check if there are four in a row for the given player.
+            
+            Parameters:
+                board (numpy.ndarray): The game board.
+                current_player (int): The current player (1 or 2).
+            
+            Returns:
+                bool: True if there are four in a row, False otherwise. 
+	'''
     for pos, direction in POS_DIR:
-        # Sprawdzenie, czy w danym kierunku istnieje sekwencja czterech pionków
         if has_four_in_a_row(board, pos, direction, current_player):
-            # Jeśli znaleziono sekwencję czterech pionków, zwróć True
             return True
-    # Jeśli nie znaleziono sekwencji czterech pionków w żadnym kierunku, zwróć False
     return False
 
 
 def has_four_in_a_row(board, start_pos, direction, current_player):
-    # Inicjalizacja licznika dla śledzenia sekwencji czterech pionków
+	''' 
+	Check if there are four in a row in a given direction.
+            
+            Parameters:
+                board (numpy.ndarray): The game board.
+                start_pos (tuple): Starting position for checking.
+                direction (numpy.ndarray): Direction of checking.
+                current_player (int): The current player (1 or 2).
+            
+            Returns:
+                bool: True if there are four in a row, False otherwise.
+
+	'''
     streak = 0
-    # Sprawdzenie kolejnych pozycji w danym kierunku
     while is_valid_position(start_pos):
-        # Sprawdzenie, czy pionek na danej pozycji należy do aktualnego gracza
+	'''
+	Check if a position is valid on the game board.
+            
+            Parameters:
+                pos (tuple): The position to check.
+            
+            Returns:
+                bool: True if the position is valid, False otherwise.
+	'''
         if board[start_pos[0], start_pos[1]] == current_player:
-            # Zwiększenie licznika, jeśli pionek należy do aktualnego gracza
             streak += 1
-            # Jeśli znaleziono sekwencję czterech pionków, zwróć True
             if streak == 4:
                 return True
         else:
-            # Jeśli przerwano sekwencję, zresetuj licznik
             streak = 0
-        # Przesunięcie do kolejnej pozycji w danym kierunku
         start_pos = move_position(start_pos, direction)
-    # Jeśli nie znaleziono sekwencji czterech pionków w danym kierunku, zwróć False
     return False
 
 
 def is_valid_position(pos):
-    # Sprawdzenie, czy pozycja znajduje się w granicach planszy
+	'''
+	Check if a position is valid on the game board.
+            
+            Parameters:
+                pos (tuple): The position to check.
+            
+            Returns:
+                bool: True if the position is valid, False otherwise.
+	'''
     return 0 <= pos[0] <= 5 and 0 <= pos[1] <= 6
 
 
 def move_position(pos, direction):
-    # Przesunięcie pozycji o krok w danym kierunku
+	'''
+	Move a position in a given direction.
+            
+            Parameters:
+                pos (tuple): The current position.
+                direction (numpy.ndarray): Direction of movement.
+            
+            Returns:
+                tuple: New position after movement.
+	'''
     return pos + direction
-
-
-# Definicja wszystkich możliwych kierunków do sprawdzenia
 POS_DIR = np.array(
     # Pionowe kierunki
     [[[i, 0], [0, 1]] for i in range(6)]
