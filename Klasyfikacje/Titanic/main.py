@@ -1,6 +1,8 @@
 """
 Prognozowanie przeżycia na Titanicu
 
+Autorzy: Sebastian Augustyniak & Wiktor Krieger
+
 Opis problemu:
 Program wykorzystuje modele uczenia maszynowego, takie jak Klasyfikator Drzewa Decyzyjnego i Maszyna Wektorów Nośnych (SVM),
 do przewidzenia przeżycia pasażerów na pokładzie Titanica na podstawie określonych cech.
