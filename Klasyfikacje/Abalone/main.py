@@ -1,6 +1,8 @@
 """
 Abalone Rings Prediction Program
 
+Autorzy: Wiktor Krieger & Sebastian Augustyniak
+
 Opis problemu:
 Program ten ma na celu przewidywanie liczby pierścieni u małży na podstawie różnych cech fizycznych
 
