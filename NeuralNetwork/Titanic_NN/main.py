@@ -10,8 +10,6 @@ Sposób użycia:
     (pandas, scikit-learn, tensorflow) są zainstalowane.
 - Uruchom skrypt, aby wczytać dane Titanic, przetworzyć dane,
     zbudować i wytrenować model sieci neuronowej.
-- Sprawdź drukowaną dokładność i raport klasyfikacyjny,
-    aby ocenić wydajność modelu sieci neuronowej.
 """
 
 
