@@ -5,7 +5,7 @@ Autorzy: Sebastian Augustyniak & Wiktor Krieger
 
 Sposób użycia:
 - Upewnij się, że Python oraz wymagane biblioteki
-    (tensorflow) są zainstalowane.
+    (tensorflow, sklearn) są zainstalowane.
 - Jeżeli nie miałeś zainstalowanego wcześniej zestawu CIFAR-10,
     zestaw ten zostanie pobrany przy pierwszym uruchomieniu
 - Uruchom skrypt, aby wczytać dane CIFAR-10, przetworzyć je,
@@ -13,9 +13,11 @@ Sposób użycia:
 
 """
 
+import tensorflow as tf
 from tensorflow.keras import layers, models
 from tensorflow.keras.datasets import cifar10
 from tensorflow.keras.utils import to_categorical
+from sklearn.metrics import classification_report
 
 (train_images, train_labels), (test_images, test_labels) = cifar10.load_data()
 train_images, test_images = train_images / 255.0, test_images / 255.0
@@ -40,3 +42,8 @@ model.fit(train_images, train_labels, epochs=10, validation_data=(test_images, t
 test_loss, test_acc = model.evaluate(test_images, test_labels)
 
 print(f"Dokładność na zestawie testowym: {test_acc}")
+
+predictions = model.predict(test_images)
+y_pred = tf.argmax(predictions, axis=1)
+y_true = tf.argmax(test_labels, axis=1)
+print('\nRaport klasyfikacji:\n', classification_report(y_true, y_pred))
