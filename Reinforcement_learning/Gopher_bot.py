@@ -9,6 +9,7 @@ Instrukcja użycia:
     2. Skopiuj i wklej ten skrypt do swojego środowiska programistycznego.
     3. Uruchom skrypt.
     4. Obserwuj proces uczenia się agenta, który będzie wyświetlany w konsoli.
+    5. W obecnej formie program działa tylko dla jednego epizodu, nie udalo się naprawić błędu
 """
 
 import gymnasium as gym
